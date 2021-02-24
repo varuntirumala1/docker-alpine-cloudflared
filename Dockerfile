@@ -38,7 +38,7 @@ RUN \
 FROM scratch
 COPY --from=rootfs-stage /root-out/ /
 
- apk add --no-cache \
+RUN apk add --no-cache \
 	curl \
 	wget
 
