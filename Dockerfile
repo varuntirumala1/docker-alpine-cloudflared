@@ -72,7 +72,7 @@ RUN \
 	curl -s -O https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-amd64.tgz \
         && tar zxf cloudflared-stable-linux-amd64.tgz \
         && mv cloudflared /bin \
-        && rm cloudflared-stable-linux-amd64.tgz \
+        && rm cloudflared-stable-linux-amd64.tgz && \
  echo "**** create abc user and make our folders ****" && \
  groupmod -g 1000 users && \
  useradd -u 911 -U -d /config -s /bin/false abc && \
