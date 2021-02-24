@@ -10,8 +10,7 @@ RUN cd /tmp \
   grep "browser_download_url.*s6-overlay-amd64\.tar\.gz" | \
   cut -d ":" -f 2,3 | tr -d \" | \
   wget -qi -
-RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / --exclude="./bin" \
-&& tar xzf /tmp/s6-overlay-amd64.tar.gz -C / ./bin \
+RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / \
 && rm /tmp/s6-overlay-amd64.tar.gz
 
 COPY patch/ /tmp/patch
