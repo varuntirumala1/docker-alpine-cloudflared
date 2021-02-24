@@ -17,7 +17,8 @@ RUN \
 	bash \
 	curl \
 	tzdata \
-	xz
+	xz \
+	wget 
 
 # fetch builder script from gliderlabs
 RUN \
@@ -66,8 +67,7 @@ RUN \
 	procps \
 	shadow \
 	tzdata \
-	nano \
-	wget \ 
+	nano \ 
 	libc6-compat && \
 	curl -s -O https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-amd64.tgz \
         && tar zxf cloudflared-stable-linux-amd64.tgz \
