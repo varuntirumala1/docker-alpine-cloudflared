@@ -1,7 +1,7 @@
-FROM alpine:3.12 as rootfs-stage
+FROM alpine:latest as rootfs-stage
 
 # environment
-ENV REL=v3.13
+ENV REL=latest-stable
 ENV ARCH=x86_64
 ENV MIRROR=http://dl-cdn.alpinelinux.org/alpine
 ENV PACKAGES=alpine-baselayout,\
@@ -36,18 +36,15 @@ RUN \
 # Runtime stage
 FROM scratch
 COPY --from=rootfs-stage /root-out/ /
-ARG BUILD_DATE
-ARG VERSION
-LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DATE}"
-LABEL maintainer="TheLamer"
-
-# set version for s6 overlay
-ARG OVERLAY_VERSION="v2.2.0.3"
-ARG OVERLAY_ARCH="amd64"
 
 # add s6 overlay
-ADD https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}-installer /tmp/
-RUN chmod +x /tmp/s6-overlay-${OVERLAY_ARCH}-installer && /tmp/s6-overlay-${OVERLAY_ARCH}-installer / && rm /tmp/s6-overlay-${OVERLAY_ARCH}-installer
+RUN cd /tmp \
+  && curl -s https://api.github.com/repos/just-containers/s6-overlay/releases/latest | \
+&& grep "browser_download_url.*s6-overlay-amd64-installer" | \
+&& cut -d ":" -f 2,3 | tr -d \" | \
+&& wget -qi -
+
+RUN chmod +x /tmp/s6-overlay-amd64-installer && /tmp/s6-overlay-amd64-installer / && rm /tmp/s6-overlay-amd64-installer
 COPY patch/ /tmp/patch
 
 # environment variables
@@ -68,7 +65,14 @@ RUN \
 	coreutils \
 	procps \
 	shadow \
-	tzdata && \
+	tzdata \
+	nano \
+	wget \ 
+	libc6-compat && \
+	curl -s -O https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-amd64.tgz \
+        && tar zxf cloudflared-stable-linux-amd64.tgz \
+        && mv cloudflared /bin \
+        && rm cloudflared-stable-linux-amd64.tgz \
  echo "**** create abc user and make our folders ****" && \
  groupmod -g 1000 users && \
  useradd -u 911 -U -d /config -s /bin/false abc && \
@@ -87,5 +91,6 @@ RUN \
 
 # add local files
 COPY root/ /
+VOLUME ["/argo"]
 
 ENTRYPOINT ["/init"]
