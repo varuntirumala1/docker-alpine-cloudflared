@@ -38,6 +38,10 @@ RUN \
 FROM scratch
 COPY --from=rootfs-stage /root-out/ /
 
+ apk add --no-cache \
+	curl \
+	wget
+
 # add s6 overlay
 RUN cd /tmp \
   && curl -s https://api.github.com/repos/just-containers/s6-overlay/releases/latest | \
