@@ -40,9 +40,9 @@ COPY --from=rootfs-stage /root-out/ /
 # add s6 overlay
 RUN cd /tmp \
   && curl -s https://api.github.com/repos/just-containers/s6-overlay/releases/latest | \
-&& grep "browser_download_url.*s6-overlay-amd64-installer" | \
-&& cut -d ":" -f 2,3 | tr -d \" | \
-&& wget -qi -
+  && grep "browser_download_url.*s6-overlay-amd64-installer" | \
+  && cut -d ":" -f 2,3 | tr -d \" | \
+  && wget -qi -
 
 RUN chmod +x /tmp/s6-overlay-amd64-installer && /tmp/s6-overlay-amd64-installer / && rm /tmp/s6-overlay-amd64-installer
 COPY patch/ /tmp/patch
