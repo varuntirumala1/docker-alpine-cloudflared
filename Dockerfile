@@ -7,11 +7,12 @@ RUN apk add --no-cache \
 # add s6 overlay
 RUN cd /tmp \
   && curl -s https://api.github.com/repos/just-containers/s6-overlay/releases/latest | \
-  grep "browser_download_url.*s6-overlay-amd64-installer\.tar\.gz" | \
+  grep "browser_download_url.*s6-overlay-amd64\.tar\.gz" | \
   cut -d ":" -f 2,3 | tr -d \" | \
   wget -qi -
 RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / --exclude="./bin" --exclude="./sbin" \
 && tar xzf /tmp/s6-overlay-amd64.tar.gz -C /usr ./bin ./sbin \
+&& rm /tmp/s6-overlay-amd64.tar.gz
 
 COPY patch/ /tmp/patch
 
