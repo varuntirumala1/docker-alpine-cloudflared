@@ -14,9 +14,7 @@ RUN cd /tmp \
 && tarball="$(find . -name "*s6-overlay-amd64.tar.gz")" \
 && tar -xzf $tarball / \
 
-RUN \
- echo "**** install runtime packages ****" && \
- apk add --no-cache \
+RUN apk add --no-cache \
 	bash \
 	ca-certificates \
 	coreutils \
