@@ -29,8 +29,6 @@ RUN apk add --no-cache \
         && rm cloudflared-stable-linux-amd64.tgz && \
  rm -rf /tmp/*
 
-# add local files
-COPY root/ /
 VOLUME ["/argo"]
 
 ENTRYPOINT ["/init"]
