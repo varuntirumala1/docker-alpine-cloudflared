@@ -12,7 +12,7 @@ RUN cd /tmp \
   cut -d ":" -f 2,3 | tr -d \" | \
   wget -qi - \
 && tarball="$(find . -name "*s6-overlay-amd64.tar.gz")" \
-&& tar -xzf $tarball /
+&& tar -xzf $tarball -C /
 
 RUN apk add --no-cache \
 	bash \
