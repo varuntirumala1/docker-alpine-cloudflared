@@ -12,7 +12,7 @@ RUN cd /tmp \
   cut -d ":" -f 2,3 | tr -d \" | \
   wget -qi - \
 && tarball="$(find . -name "*s6-overlay-amd64.tar.gz")" \
-&& tar -xzf $tarball / \
+&& tar -xzf $tarball /
 
 RUN apk add --no-cache \
 	bash \
@@ -27,8 +27,7 @@ RUN apk add --no-cache \
         && tar zxf cloudflared-stable-linux-amd64.tgz \
         && mv cloudflared /bin \
         && rm cloudflared-stable-linux-amd64.tgz && \
- rm -rf \
-	/tmp/*
+ rm -rf /tmp/*
 
 # add local files
 COPY root/ /
