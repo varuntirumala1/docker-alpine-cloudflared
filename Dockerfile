@@ -1,4 +1,42 @@
-FROM alpine:latest
+FROM alpine:latest as rootfs-stage
+
+# environment
+ENV REL=latest-stable
+ENV ARCH=x86_64
+ENV MIRROR=http://dl-cdn.alpinelinux.org/alpine
+ENV PACKAGES=alpine-baselayout,\
+alpine-keys,\
+apk-tools,\
+busybox,\
+libc-utils,\
+xz
+
+# install packages
+RUN \
+ apk add --no-cache \
+	bash \
+	curl \
+	tzdata \
+	xz \
+	wget 
+
+# fetch builder script from gliderlabs
+RUN \
+ curl -o \
+ /mkimage-alpine.bash -L \
+	https://raw.githubusercontent.com/gliderlabs/docker-alpine/master/builder/scripts/mkimage-alpine.bash && \
+ chmod +x \
+	/mkimage-alpine.bash && \
+ ./mkimage-alpine.bash  && \
+ mkdir /root-out && \
+ tar xf \
+	/rootfs.tar.xz -C \
+	/root-out && \
+ sed -i -e 's/^root::/root:!:/' /root-out/etc/shadow
+
+# Runtime stage
+FROM scratch
+COPY --from=rootfs-stage /root-out/ /
 
 RUN apk add --no-cache \
 	curl \
@@ -7,12 +45,11 @@ RUN apk add --no-cache \
 # add s6 overlay
 RUN cd /tmp \
   && curl -s https://api.github.com/repos/just-containers/s6-overlay/releases/latest | \
-  grep "browser_download_url.*s6-overlay-amd64\.tar\.gz" | \
+  grep "browser_download_url.*s6-overlay-amd64-installer" | \
   cut -d ":" -f 2,3 | tr -d \" | \
   wget -qi -
-RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / \
-&& rm /tmp/s6-overlay-amd64.tar.gz
 
+RUN chmod +x /tmp/s6-overlay-amd64-installer && /tmp/s6-overlay-amd64-installer / && rm /tmp/s6-overlay-amd64-installer
 COPY patch/ /tmp/patch
 
 # environment variables
