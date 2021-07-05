@@ -1,6 +1,20 @@
-FROM alpine:latest
+FROM alpine:3.13 as rootfs-stage
 
-RUN apk add --no-cache \
+# environment
+ENV REL=v3.14
+ENV ARCH=x86_64
+ENV MIRROR=http://dl-cdn.alpinelinux.org/alpine
+ENV PACKAGES=alpine-baselayout,\
+alpine-keys,\
+apk-tools,\
+busybox,\
+libc-utils,\
+xz
+
+# install packages
+RUN \
+ apk add --no-cache \
+	bash \
 	curl \
 	tar \
 	wget
